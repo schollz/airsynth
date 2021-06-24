@@ -86,3 +86,7 @@ SynthDef("icarussynth",{
 				Out.ar(0,snd)
 			}).add;	
 )
+
+// control pitch with X direction (so left hand is low, right hand is high)
+// control feedback with Y direction
+// control lpf with spread
