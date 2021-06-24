@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"flag"
 	"fmt"
 	"io/fs"
 	"io/ioutil"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/hypebeast/go-osc/osc"
+	"github.com/pkg/browser"
 	log "github.com/schollz/logger"
 	"gonum.org/v1/gonum/stat"
 )
@@ -21,15 +23,26 @@ var client *osc.Client
 var static embed.FS
 var fsStatic http.Handler
 
+var flagOSCPort, flagPort int
+var flagOSCHost string
+
+func init() {
+	flag.IntVar(&flagPort, "video server port", 8085, "port for website")
+	flag.IntVar(&flagOSCPort, "osc port", 57120, "port to send osc messages")
+	flag.StringVar(&flagOSCHost, "osc host", "localhost", "host to send osc messages")
+}
+
 func main() {
+	flag.Parse()
+	client = osc.NewClient(flagOSCHost, flagOSCPort)
+
 	fsRoot, _ := fs.Sub(static, "static")
 	fsStatic = http.FileServer(http.FS(fsRoot))
-	// client = osc.NewClient("localhost", 57120)
 	log.SetLevel("debug")
-	port := 8098
-	log.Infof("listening on :%d", port)
+	log.Infof("listening on :%d", flagPort)
+	browser.OpenURL(fmt.Sprintf("http://localhost:%d/", flagPort))
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", flagPort), nil)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
