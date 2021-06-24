@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	movingaverage "github.com/RobinUS2/golang-moving-average"
 	"github.com/gorilla/websocket"
 	"github.com/hypebeast/go-osc/osc"
 	"github.com/pkg/browser"
@@ -25,8 +26,16 @@ var fsStatic http.Handler
 
 var flagOSCPort, flagPort int
 var flagOSCHost string
+var ma map[string][]*movingaverage.ConcurrentMovingAverage
 
 func init() {
+	ma = make(map[string][]*movingaverage.ConcurrentMovingAverage)
+	ma["Left"] = make([]*movingaverage.ConcurrentMovingAverage, 3)
+	ma["Right"] = make([]*movingaverage.ConcurrentMovingAverage, 3)
+	for i := 0; i < 3; i++ {
+		ma["Left"][i] = movingaverage.Concurrent(movingaverage.New(5))
+		ma["Right"][i] = movingaverage.Concurrent(movingaverage.New(5))
+	}
 	flag.IntVar(&flagPort, "video server port", 8085, "port for website")
 	flag.IntVar(&flagOSCPort, "osc port", 57120, "port to send osc messages")
 	flag.StringVar(&flagOSCHost, "osc host", "localhost", "host to send osc messages")
@@ -153,7 +162,7 @@ func processScore(p HandData) {
 		meanZ, stdZ := stat.MeanStdDev(zs, ws)
 		_ = meanZ
 		_ = stdZ
-		spread := (stdX + stdY) / 2
+		spread := (stdX + stdY + stdZ) / 3
 		if spread < minSpread {
 			minSpread = spread
 		}
@@ -165,7 +174,22 @@ func processScore(p HandData) {
 		} else {
 			spread = (spread - minSpread) / (maxSpread - minSpread)
 		}
+		spread = spread - 0.3
+		spread = spread * 2
+		if spread < 0 {
+			spread = 0
+		} else if spread > 1 {
+			spread = 1
+		}
+		ma[p.MultiHandedness[i].Label][0].Add(meanX)
+		ma[p.MultiHandedness[i].Label][1].Add(meanY)
+		ma[p.MultiHandedness[i].Label][2].Add(spread)
 
+		meanX = ma[p.MultiHandedness[i].Label][0].Avg()
+		meanY = ma[p.MultiHandedness[i].Label][1].Avg()
+		spread = ma[p.MultiHandedness[i].Label][2].Avg()
+		fmt.Println(meanX, meanY, spread)
+		log.SetLevel("info")
 		log.Debugf("%s: (%2.2f, %2.2f, %2.2f)", p.MultiHandedness[i].Label, meanX, meanY, spread)
 	}
 }

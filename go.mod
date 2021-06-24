@@ -3,6 +3,7 @@ module github.com/schollz/oschands
 go 1.16
 
 require (
+	github.com/RobinUS2/golang-moving-average v1.0.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/hypebeast/go-osc v0.0.0-20210408213458-3287e1838f40
 	github.com/pkg/browser v0.0.0-20210621091255-c198bc921a84
