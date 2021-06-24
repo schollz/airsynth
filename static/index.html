@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/data/control_utils.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/control_utils.css" crossorigin="anonymous">
     <style>
     @keyframes spin {
   0% {
@@ -168,10 +168,10 @@ body {
     </div>
     <div class="control-panel">
     </div>
-    <script src="/data/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="/data/control_utils.js" crossorigin="anonymous"></script>
-    <script src="/data/drawing_utils.js" crossorigin="anonymous"></script>
-    <script src="/data/hands.js" crossorigin="anonymous"></script>
+    <script src="/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="/control_utils.js" crossorigin="anonymous"></script>
+    <script src="/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="/hands.js" crossorigin="anonymous"></script>
     <script>
     "use strict";
 // Our input frames will come from here.
@@ -216,7 +216,7 @@ function onResults(results) {
 }
 const hands = new Hands({ locateFile: (file) => {
 		console.log(`https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.1/${file}`);
-        return `/data/${file}`;
+        return `/${file}`;
  } });
 hands.onResults(onResults);
 // Present a control panel through which the user can manipulate the solution
