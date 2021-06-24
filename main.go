@@ -109,6 +109,11 @@ var wsupgrader = websocket.Upgrader{
 }
 
 func handleWebsocket(w http.ResponseWriter, r *http.Request) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Debug(r)
+		}
+	}()
 	c, errUpgrade := wsupgrader.Upgrade(w, r, nil)
 	if errUpgrade != nil {
 		return errUpgrade
@@ -120,6 +125,7 @@ func handleWebsocket(w http.ResponseWriter, r *http.Request) (err error) {
 		err := c.ReadJSON(&p)
 		if err != nil {
 			log.Debug("read:", err)
+			break
 		} else {
 			go processScore(p)
 		}
@@ -154,7 +160,11 @@ func processScore(p HandData) {
 		if spread > maxSpread {
 			maxSpread = spread
 		}
-		spread = (spread - minSpread) / (maxSpread - minSpread)
+		if (maxSpread - minSpread) <= 0 {
+			spread = 0.5
+		} else {
+			spread = (spread - minSpread) / (maxSpread - minSpread)
+		}
 
 		log.Debugf("%s: (%2.2f, %2.2f, %2.2f)", p.MultiHandedness[i].Label, meanX, meanY, spread)
 	}
