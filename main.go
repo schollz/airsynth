@@ -114,6 +114,9 @@ func handleWebsocket(w http.ResponseWriter, r *http.Request) (err error) {
 	return
 }
 
+var minSpread = 1000.0
+var maxSpread = 0.0
+
 func processScore(p HandData) {
 	for i, hand := range p.MultiHandLandmarks {
 		xs := make([]float64, len(hand))
@@ -127,10 +130,19 @@ func processScore(p HandData) {
 			ws[j] = 1
 		}
 		meanX, stdX := stat.MeanStdDev(xs, ws)
-		meanY, stdY := stat.MeanStdDev(xs, ws)
-		meanZ, stdZ := stat.MeanStdDev(xs, ws)
+		meanY, stdY := stat.MeanStdDev(ys, ws)
+		meanZ, stdZ := stat.MeanStdDev(zs, ws)
 		_ = meanZ
 		_ = stdZ
-		fmt.Println(p.MultiHandedness[i].Label, meanX, meanY, (stdX+stdY)/2)
+		spread := (stdX + stdY) / 2
+		if spread < minSpread {
+			minSpread = spread
+		}
+		if spread > maxSpread {
+			maxSpread = spread
+		}
+		spread = (spread - minSpread) / (maxSpread - minSpread)
+
+		log.Debugf("%s: (%2.2f, %2.2f, %2.2f)", p.MultiHandedness[i].Label, meanX, meanY, spread)
 	}
 }
