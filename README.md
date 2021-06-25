@@ -17,7 +17,6 @@ First install SuperCollider, then download and run airsynth.
 
 <details><summary><strong>Windows</strong></summary>
 
-#### Downloading
 
 [Click here](https://github.com/supercollider/supercollider/releases/download/Version-3.11.2/SuperCollider-3.11.2-Windows-32bit-VS.exe) to download the latest Windows release. This is the *32-bit* release, rather than the 64-bit release, because [the most recent Windows Update prevents the 64-bit version from starting](https://github.com/supercollider/supercollider/issues/4368#issuecomment-832050665). But 32-bit will work just fine!
 
@@ -31,7 +30,6 @@ C:\Users\<yourname>\AppData\Local\SuperCollider\Extensions\
 
 <details><summary><strong>Mac OS</strong></summary>
 
-#### Downloading
 
 [Click here](https://supercollider.github.io/download) to go to the website to download SuperCollider. *Make sure to check your version* of Mac OS and install the correct version of SuperCollider.
 
