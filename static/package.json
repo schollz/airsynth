@@ -1,0 +1,12 @@
+{
+  "name": "@mediapipe/hands",
+  "description": "Mediapipe Hands Solution",
+  "version": "0.1.1617147326",
+  "author": "mhays@google.com",
+  "license": "Apache-2.0",
+  "homepage": "https://google.github.io/mediapipe/solutions/hands",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
