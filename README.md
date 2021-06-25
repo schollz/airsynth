@@ -17,7 +17,7 @@ go build -v
 
 this should open a browser webpage that will load the hand capture.
 
-now run SuperCollider. open up `icarus.scd` and run the first and the second block. 
+now run SuperCollider. open up `airsynth.scd` and run the first and the second block. 
 make sure to keep the browser open with the hand gesture mapping, otherwise it might goto sleep.
 
 filter open/close with palm open/close. raise hand to add feedback, move hand across to change pitch. left hand and right hand control separate oscillators.

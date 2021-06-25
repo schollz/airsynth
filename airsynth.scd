@@ -1,5 +1,5 @@
 (
-SynthDef("icarus",{
+SynthDef("airsynth",{
 	arg amp=1.0, ctrlMidi=0.5, pan=0, envgate=0,midiPlus=0,
 	pulse=0,saw=0,
 	attack=0.015,decay=1,release=2,sustain=0.9,
@@ -95,16 +95,16 @@ SynthDef("icarus",{
 }).add;
 )
 
-x=Synth("icarus",[\amp,0.5,\envgate,1])
+x=Synth("airsynth",[\amp,0.5,\envgate,1])
 
 // control pitch with X direction (so left hand is low, right hand is high)
 // control feedback with Y direction
 // control lpf with spread
 // load up one synth for each hand
 (
-x=Synth("icarus",[\envgate,1]);
-y=Synth("icarus",[\envgate,1,\amp,2]);
-z=Synth("icarus",[\envgate,1,\amp,1.5]);
+x=Synth("airsynth",[\envgate,1]);
+y=Synth("airsynth",[\envgate,1,\amp,2]);
+z=Synth("airsynth",[\envgate,1,\amp,1.5]);
 ~o1 = OSCFunc({ arg msg, time, addr, recvPort; [msg, time, addr, recvPort].postln;
 	x.set(\ctrlMidi,msg[1],\feedback,msg[2]+0.5,\ctrlLPF,msg[3]);
 }, '/right');
