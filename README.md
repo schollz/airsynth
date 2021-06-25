@@ -11,10 +11,12 @@ go build -v
 ./oschands
 ```
 
-this should open a browser webpage. when you start the browser, clench and unclench your hands a few times for the system to calibrate the measure of a closed/open hand.
+this should open a browser webpage that will load the hand capture.
 
-now run SuperCollider. open up `hands.scd` and run the first and the second block. 
+now run SuperCollider. open up `icarus.scd` and run the first and the second block. 
 make sure to keep the browser open with the hand gesture mapping, otherwise it might goto sleep.
+
+filter open/close with palm open/close. raise hand to add feedback, move hand across to change pitch. left hand and right hand control separate oscillators.
 
 
 
