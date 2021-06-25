@@ -46,10 +46,7 @@ Then, [click here](https://github.com/supercollider/sc3-plugins/releases/downloa
 first make sure you have Go 1.16+ installed.
 
 ```
-git clone https://github.com/schollz/airsynth.git
-cd airsynth
-go build -v
-./airsynth
+go install github.com/schollz/airsynth@latest
 ```
 
 this should open a browser webpage that will load the hand capture.
