@@ -4,6 +4,8 @@ oschands simply uses [MediaPipe Hands](https://google.github.io/mediapipe/soluti
 
 ## usage
 
+first make sure you have Go 1.16+ installed.
+
 ```
 git clone https://github.com/schollz/oschands.git
 cd oschands
