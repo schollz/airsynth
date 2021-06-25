@@ -26,7 +26,7 @@ var client *osc.Client
 var static embed.FS
 var fsStatic http.Handler
 
-var flagOSCPort, flagPort int
+var flagFrameRate, flagOSCPort, flagPort int
 var flagOSCHost string
 var flagDontOpen bool
 var ma map[string][]*movingaverage.ConcurrentMovingAverage
@@ -39,9 +39,10 @@ func init() {
 		ma["Left"][i] = movingaverage.Concurrent(movingaverage.New(5))
 		ma["Right"][i] = movingaverage.Concurrent(movingaverage.New(5))
 	}
+	flag.IntVar(&flagFrameRate, "reduce-fps", 70, "reduce frame rate (default 70% of max), [0-100]")
 	flag.IntVar(&flagPort, "video server port", 8085, "port for website")
 	flag.IntVar(&flagOSCPort, "osc port", 57120, "port to send osc messages")
-	flag.BoolVar(&flagDontOpen,"dont",false,"don't open browser")
+	flag.BoolVar(&flagDontOpen, "dont", false, "don't open browser")
 	flag.StringVar(&flagOSCHost, "osc host", "localhost", "host to send osc messages")
 }
 
@@ -54,7 +55,7 @@ func main() {
 	log.SetLevel("debug")
 	log.Infof("listening on :%d", flagPort)
 	if !flagDontOpen {
-	browser.OpenURL(fmt.Sprintf("http://localhost:%d/", flagPort))		
+		browser.OpenURL(fmt.Sprintf("http://localhost:%d/", flagPort))
 	}
 	http.HandleFunc("/", handler)
 	http.ListenAndServe(fmt.Sprintf(":%d", flagPort), nil)
@@ -148,13 +149,11 @@ func handleWebsocket(w http.ResponseWriter, r *http.Request) (err error) {
 	return
 }
 
-var minSpread = 1000.0
-var maxSpread = 0.0
-
 func processScore(p HandData) {
-		if rand.Float64()>0.3 {
-			return
-		}
+	// reduce frame rate a little bit
+	if rand.Float64() > float64(flagFrameRate)/100.0 {
+		return
+	}
 	for i, hand := range p.MultiHandLandmarks {
 		xs := make([]float64, len(hand))
 		ys := make([]float64, len(hand))
@@ -162,7 +161,7 @@ func processScore(p HandData) {
 		ws := make([]float64, len(hand))
 		for j, coord := range hand {
 			xs[j] = coord.X
-			ys[j] = 1-coord.Y
+			ys[j] = 1 - coord.Y
 			zs[j] = coord.Z
 			ws[j] = 1
 		}
@@ -171,17 +170,17 @@ func processScore(p HandData) {
 		meanZ, stdZ := stat.MeanStdDev(zs, ws)
 		_ = meanZ
 		_ = stdZ
-		_=stdX
-		_=stdY
-		spread := dist(hand[0].X,hand[0].Y,hand[12].X,hand[12].Y)/dist(hand[0].X,hand[0].Y,hand[17].X,hand[17].Y)
-spread = spread-0.4
-spread = spread/1.9
-if spread < 0 {
-	spread = 0
-}
-if spread > 1 {
-	spread = 1
-}
+		_ = stdX
+		_ = stdY
+		spread := dist(hand[0].X, hand[0].Y, hand[12].X, hand[12].Y) / dist(hand[0].X, hand[0].Y, hand[17].X, hand[17].Y)
+		spread = spread - 0.4
+		spread = spread / 1.9
+		if spread < 0 {
+			spread = 0
+		}
+		if spread > 1 {
+			spread = 1
+		}
 		ma[p.MultiHandedness[i].Label][0].Add(meanX)
 		ma[p.MultiHandedness[i].Label][1].Add(meanY)
 		ma[p.MultiHandedness[i].Label][2].Add(spread)
@@ -190,14 +189,14 @@ if spread > 1 {
 		meanY = ma[p.MultiHandedness[i].Label][1].Avg()
 		spread = ma[p.MultiHandedness[i].Label][2].Avg()
 		log.Debugf("%s: (%2.2f, %2.2f, %2.2f)", p.MultiHandedness[i].Label, meanX, meanY, spread)
-		msg := osc.NewMessage("/"+strings.ToLower(p.MultiHandedness[i].Label))
-		msg.Append(meanX)		
-		msg.Append(meanY)		
-		msg.Append(spread)	
-		client.Send(msg)	
+		msg := osc.NewMessage("/" + strings.ToLower(p.MultiHandedness[i].Label))
+		msg.Append(meanX)
+		msg.Append(meanY)
+		msg.Append(spread)
+		client.Send(msg)
 	}
 }
 
-func dist(x1,y1,x2,y2 float64) float64 {
-	return math.Sqrt(math.Pow(x1-x2,2)+math.Pow(y1-y2,2))
+func dist(x1, y1, x2, y2 float64) float64 {
+	return math.Sqrt(math.Pow(x1-x2, 2) + math.Pow(y1-y2, 2))
 }
