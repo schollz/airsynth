@@ -2,6 +2,8 @@
 
 oschands simply uses [MediaPipe Hands](https://google.github.io/mediapipe/solutions/hands.html) to calculate hand posiiton (x, y coordinates of both left and right hands) and hand gesture (via "spread" measuring clenched vs open hand) and sends this values to SuperCollider.
 
+demo: https://vimeo.com/567293081
+
 ## usage
 
 first make sure you have Go 1.16+ installed.
