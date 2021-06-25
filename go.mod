@@ -1,4 +1,4 @@
-module github.com/schollz/oschands
+module github.com/schollz/airsynth
 
 go 1.16
 
