@@ -3,16 +3,16 @@ SynthDef("icarus",{
 	arg amp=1.0, ctrlMidi=0.5, pan=0, envgate=0,midiPlus=0,
 	pulse=0,saw=0,
 	attack=0.015,decay=1,release=2,sustain=0.9,
-	ctrlLPF=20000,resonance=0,portamento=0.1,tremelo=0,destruction=0,
+	ctrlLPF=20000,resonance=0,portamento=0.1,tremelo=0,destruction=0.5,
 	pwmcenter=0.5,pwmwidth=0.05,pwmfreq=10,detuning=0.1,
 	feedback=0.5,delaytime=0.25, delaytimelag=0.1, sublevel=0;
 
 	// vars
 	var ender,lpf,snd,local,in,ampcheck,hz,scaleFull,scaleD;
 
-//	scaleD=Scale.newFromKey(\dorian);
-	scaleD=Scale.minorPentatonic;
-	scaleFull=60+(scaleD.degrees++(12+scaleD.degrees));
+	scaleD=Scale.newFromKey(\dorian);
+	//scaleD=Scale.minorPentatonic;
+	scaleFull=48+(scaleD.degrees++(12+scaleD.degrees)++(24+scaleD.degrees));
 	hz = (Select.kr(Lag.kr(LinLin.kr(ctrlMidi,0,1,0,scaleFull.size),0.05),scaleFull)+midiPlus).midicps;
 
 	lpf = Clip.kr(LinExp.kr(ctrlLPF,0,1,100,20000),100,20000);
@@ -103,14 +103,14 @@ x=Synth("icarus",[\amp,0.5,\envgate,1])
 // load up one synth for each hand
 (
 x=Synth("icarus",[\envgate,1]);
-y=Synth("icarus",[\envgate,1,\amp,2]);
-z=Synth("icarus",[\envgate,1,\amp,1.5]);
+y=Synth("icarus",[\envgate,1,\amp,2.5]);
+z=Synth("icarus",[\envgate,1,\amp,1.2]);
 ~o1 = OSCFunc({ arg msg, time, addr, recvPort; [msg, time, addr, recvPort].postln;
 	x.set(\ctrlMidi,msg[1],\feedback,msg[2]+0.5,\ctrlLPF,msg[3]);
 }, '/right');
 ~o2 = OSCFunc({ arg msg, time, addr, recvPort; [msg, time, addr, recvPort].postln;
 	y.set(\ctrlMidi,msg[1],\feedback,msg[2]+0.5,\ctrlLPF,msg[3]);
-	z.set(\ctrlMidi,msg[1],\midiPlus,5,\feedback,msg[2]+0.5,\ctrlLPF,msg[3]);
+	z.set(\ctrlMidi,msg[1],\midiPlus,12,\feedback,msg[2]+0.5,\ctrlLPF,msg[3]);
 }, '/left');
 )
 
