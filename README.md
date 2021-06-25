@@ -9,7 +9,7 @@ airsynth simply uses [MediaPipe Hands](https://google.github.io/mediapipe/soluti
 
 demo: https://vimeo.com/567293081
 
-## Usage
+## Install
 
 First install SuperCollider, then download and run airsynth.
 
@@ -43,18 +43,32 @@ Then, [click here](https://github.com/supercollider/sc3-plugins/releases/downloa
 
 </details>
 
-first make sure you have Go 1.16+ installed.
+### Installing airsynth
+
+The easiest way to install is to download the latest version from [the releases](https://github.com/schollz/airsynth/releases/latest).
+
+If you have Go installed, you can also install from source:
 
 ```
 go install github.com/schollz/airsynth@latest
 ```
 
-this should open a browser webpage that will load the hand capture.
 
-now run SuperCollider. open up `airsynth.scd` and run the first and the second block. 
-make sure to keep the browser open with the hand gesture mapping, otherwise it might goto sleep.
+## Usage
 
-filter open/close with palm open/close. raise hand to add feedback, move hand across to change pitch. left hand and right hand control separate oscillators.
+To use, first open SuperCollider and run the `airsynth.scd` file. There are two different blocks in there that you can run to setup the synth.
+
+Then you can just double-click the `airsynth` binary, or in a terminal type:
+
+```
+airsynth
+```
+
+This will open up your browser that will autodetect your webcam and start sending OSC messages to SuperCollider about your current hand gestures.
+
+
+The current example changes th filter open/close with palm open/close. You can raise your hand to add feedback, or move hand across to change pitch. The left hand and right hand control separate oscillators.
+
 
 
 
