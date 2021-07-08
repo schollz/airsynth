@@ -13,9 +13,10 @@ builds:
       - linux
       - windows
       - darwin
-format: zip
 archives:
-  - replacements:
+  - 
+    format: zip
+    replacements:
       darwin: Darwin
       linux: Linux
       windows: Windows
